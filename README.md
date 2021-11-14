@@ -1,2 +1,2 @@
 # BulkyBook
-## E-Commerce project in Asp.Net Core MVC project (.Net 5).
+## E-Commerce project in Asp.Net Core MVC (.Net 5).
