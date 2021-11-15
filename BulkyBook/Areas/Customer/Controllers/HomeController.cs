@@ -1,7 +1,10 @@
-﻿using BulkyBook.Models.ViewModels;
+﻿using System.Collections.Generic;
+using BulkyBook.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using BulkyBook.DataAccess.Repository;
+using BulkyBook.DataAccess.Repository.IRepository;
 
 namespace BulkyBook.Areas.Customer.Controllers
 {
