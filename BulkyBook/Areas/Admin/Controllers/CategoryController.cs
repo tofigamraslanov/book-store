@@ -7,11 +7,11 @@ namespace BulkyBook.Areas.Admin.Controllers
     [Area("Admin")]
     public class CategoryController : Controller
     {
-        private readonly  IUnitOfWork _unitOfWork;
+        private readonly IUnitOfWork _unitOfWork;
 
         public CategoryController(IUnitOfWork unitOfWork)
         {
-            _unitOfWork = unitOfWork; 
+            _unitOfWork = unitOfWork;
         }
 
         public IActionResult Index()
@@ -40,11 +40,11 @@ namespace BulkyBook.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid) return View(category);
 
-            if (category.Id==0)
+            if (category.Id == 0)
                 _unitOfWork.Category.Add(category);
             else
                 _unitOfWork.Category.Update(category);
-               
+
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
         }
@@ -61,13 +61,13 @@ namespace BulkyBook.Areas.Admin.Controllers
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var category= _unitOfWork.Category.Get(id);
-            if (category==null)
+            var category = _unitOfWork.Category.Get(id);
+            if (category == null)
                 return Json(new { success = false, message = "Error while deleting" });
-            
+
             _unitOfWork.Category.Remove(category);
             _unitOfWork.Save();
-            return Json(new { success = true, message = "Delete Successful" });
+            return Json(new { success = true, message = "Delete successful" });
         }
 
         #endregion

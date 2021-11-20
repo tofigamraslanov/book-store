@@ -1,26 +1,26 @@
 ﻿let dataTable;
 
-$(document).ready(function() {
+$(document).ready(function () {
     loadDataTable();
 });
 
 function loadDataTable() {
     dataTable = $("#tableData").DataTable({
         ajax: {
-            url: "/Admin/Category/GetAll"
+            url: "/Admin/CoverType/GetAll"
         },
         columns: [
             { data: "name", width: "60%" },
             {
                 data: "id",
-                render: function(data) {
+                render: function (data) {
                     return `
                         <div class="text-center">
-                            <a href="/Admin/Category/Upsert/${data
+                            <a href="/Admin/CoverType/Upsert/${data
                         }" class="btn btn-success text-white" style="cursor: pointer">
                                 <i class="fas fa-edit"></i>
                             </a>
-                            <a onclick=deleteCategory("/Admin/Category/Delete/${data
+                            <a onclick=deleteCoverType("/Admin/CoverType/Delete/${data
                         }") class="btn btn-danger text-white" style="cursor: pointer">
                                 <i class="fas fa-trash-alt"></i>
                             </a>
@@ -33,7 +33,7 @@ function loadDataTable() {
     });
 }
 
-function deleteCategory(url) {
+function deleteCoverType(url) {
     window.swal({
         title: "Are you sure you want to delete?",
         text: "You will not be able to restore data!",
@@ -45,7 +45,7 @@ function deleteCategory(url) {
             $.ajax({
                 type: "DELETE",
                 url: url,
-                success: function(data) {
+                success: function (data) {
                     if (data.success) {
                         window.toastr.success(data.message);
                         dataTable.ajax.reload();
