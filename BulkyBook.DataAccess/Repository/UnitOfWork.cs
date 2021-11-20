@@ -14,8 +14,8 @@ namespace BulkyBook.DataAccess.Repository
             StoredProcedureCall = new StoredProcedureCall(_context);
         }
 
-        public ICategoryRepository Category { get; private set; }
-        public IStoredProcedureCall StoredProcedureCall { get; private set; }
+        public ICategoryRepository Category { get; }
+        public IStoredProcedureCall StoredProcedureCall { get; }
 
         public void Dispose()
         {
