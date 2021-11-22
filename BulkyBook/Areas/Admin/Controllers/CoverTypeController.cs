@@ -48,6 +48,7 @@ namespace BulkyBook.Areas.Admin.Controllers
 
             var parameter = new DynamicParameters();
             parameter.Add("@Name", coverType.Name);
+
             if (coverType.Id == 0)
                 _unitOfWork.StoredProcedureCall.Execute(StaticDetails.ProcedureCoverTypeCreate, parameter);
             else
