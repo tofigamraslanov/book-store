@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 namespace BulkyBook.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    public class CategoryController : Controller
+    public class CompanyController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(IUnitOfWork unitOfWork)
+        public CompanyController(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -21,29 +21,30 @@ namespace BulkyBook.Areas.Admin.Controllers
 
         public IActionResult Upsert(int? id)
         {
-            var category = new Category();
+            var company = new Company();
 
             if (id == null)
-                return View(category);
+                return View(company);
 
-            category = _unitOfWork.Category.Get(id.GetValueOrDefault());
+            company = _unitOfWork.Company.Get(id.GetValueOrDefault());
 
-            if (category == null)
+            if (company == null)
                 return NotFound();
 
-            return View(category);
+            return View(company);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Category category)
+        public IActionResult Upsert(Company company)
         {
-            if (!ModelState.IsValid) return View(category);
+            if (!ModelState.IsValid)
+                return View(company);
 
-            if (category.Id == 0)
-                _unitOfWork.Category.Add(category);
+            if (company.Id == 0)
+                _unitOfWork.Company.Add(company);
             else
-                _unitOfWork.Category.Update(category);
+                _unitOfWork.Company.Update(company);
 
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
@@ -54,21 +55,21 @@ namespace BulkyBook.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var categories = _unitOfWork.Category.GetAll();
-            return Json(new { data = categories });
+            var companies = _unitOfWork.Company.GetAll();
+            return Json(new { data = companies });
         }
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var category = _unitOfWork.Category.Get(id);
-            if (category == null)
+            var company = _unitOfWork.Company.Get(id);
+            if (company == null)
                 return Json(new { success = false, message = "Error while deleting" });
 
-            _unitOfWork.Category.Remove(category);
+            _unitOfWork.Company.Remove(company);
             _unitOfWork.Save();
 
-            return Json(new { success = true, message = "Delete successful" });
+            return Json(new { success = true, message = "Delete Successful" });
         }
 
         #endregion

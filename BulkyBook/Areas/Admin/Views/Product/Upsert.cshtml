@@ -16,7 +16,7 @@
             <h2 class="text-primary">@title</h2>
         </div>
         <div class="col-8 pt-4">
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     <label asp-for="Product.Title"></label>
                 </div>
@@ -25,7 +25,7 @@
                     <span asp-validation-for="Product.Title" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     <label asp-for="Product.Isbn"></label>
                 </div>
@@ -34,7 +34,7 @@
                     <span asp-validation-for="Product.Isbn" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     <label asp-for="Product.Author"></label>
                 </div>
@@ -43,7 +43,7 @@
                     <span asp-validation-for="Product.Author" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     <label asp-for="Product.Description"></label>
                 </div>
@@ -51,7 +51,7 @@
                     <textarea asp-for="Product.Description" class="form-control"></textarea>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     <label asp-for="Product.ListPrice"></label>
                 </div>
@@ -60,7 +60,7 @@
                     <span asp-validation-for="Product.ListPrice" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     <label asp-for="Product.Price"></label>
                 </div>
@@ -69,7 +69,7 @@
                     <span asp-validation-for="Product.Price" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     <label asp-for="Product.Price50"></label>
                 </div>
@@ -78,7 +78,7 @@
                     <span asp-validation-for="Product.Price50" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     <label asp-for="Product.Price100"></label>
                 </div>
@@ -87,7 +87,7 @@
                     <span asp-validation-for="Product.Price100" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     Category
                 </div>
@@ -96,7 +96,7 @@
                     <span asp-validation-for="Product.CategoryId" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     Cover Type
                 </div>
@@ -105,7 +105,7 @@
                     <span asp-validation-for="Product.CoverTypeId" class="text-danger"></span>
                 </div>
             </div>
-            <div class="form-group row">
+            <div class="form-group row pb-3">
                 <div class="col-4">
                     Image
                 </div>
@@ -113,7 +113,6 @@
                     <input type="file" name="files" id="uploadBox" multiple class="form-control"/>
                 </div>
             </div>
-            <br/>
             <div class="form-group row">
                 <div class="col-8 offset-4">
                     @if (Model.Product.Id != 0)

@@ -13,13 +13,17 @@ namespace BulkyBook.DataAccess.Repository
             Category = new CategoryRepository(_context);
             CoverType = new CoverTypeRepository(_context);
             Product = new ProductRepository(_context);
+            Company = new CompanyRepository(_context);
+            ApplicationUser = new ApplicationUserRepository(_context);
             StoredProcedureCall = new StoredProcedureCall(_context);
         }
 
         public ICategoryRepository Category { get; }
         public IProductRepository Product { get; }
-        public IStoredProcedureCall StoredProcedureCall { get; }
+        public ICompanyRepository Company { get; }
         public ICoverTypeRepository CoverType { get; }
+        public IApplicationUserRepository ApplicationUser { get; }
+        public IStoredProcedureCall StoredProcedureCall { get; }
 
         public void Dispose()
         {
