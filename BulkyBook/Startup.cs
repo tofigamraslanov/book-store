@@ -19,7 +19,7 @@ namespace BulkyBook
         {
             Configuration = configuration;
         }
-     
+
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -35,6 +35,22 @@ namespace BulkyBook
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = $"/Identity/Account/Login";
+                options.LogoutPath = $"/Identity/Account/Logout";
+                options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+            });
+            services.AddAuthentication().AddFacebook(options =>
+            {
+                options.AppId = "418125313130054";
+                options.AppSecret = "73286e5e0212792e72ab6e7b78edd506";
+            });
+            services.AddAuthentication().AddGoogle(options =>
+            {
+                options.ClientId = "337108132985-tqq6mer22upkfnmvm380qiebecjg37dh.apps.googleusercontent.com";
+                options.ClientSecret = "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";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
