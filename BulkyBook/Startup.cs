@@ -1,3 +1,4 @@
+using System;
 using BulkyBook.DataAccess.Data;
 using BulkyBook.DataAccess.Repository;
 using BulkyBook.DataAccess.Repository.IRepository;
@@ -31,6 +32,7 @@ namespace BulkyBook
             //services.AddDatabaseDeveloperPageExceptionFilter();
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+           
             services.AddSingleton<IEmailSender, EmailSender>();
             services.Configure<EmailOptions>(Configuration);
             services.AddScoped<IUnitOfWork, UnitOfWork>();
@@ -51,6 +53,13 @@ namespace BulkyBook
             {
                 options.ClientId = "337108132985-tqq6mer22upkfnmvm380qiebecjg37dh.apps.googleusercontent.com";
                 options.ClientSecret = "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";
+            });
+
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
             });
         }
 
@@ -73,6 +82,8 @@ namespace BulkyBook
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseSession();
 
             app.UseAuthentication();
             app.UseAuthorization();

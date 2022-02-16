@@ -45,7 +45,7 @@ namespace BulkyBook.DataAccess.Repository
 
         public T OneRecord<T>(string procedureName, DynamicParameters param = null)
         {
-            using SqlConnection sqlConnection = new SqlConnection(_connectionString);
+            using var sqlConnection = new SqlConnection(_connectionString);
 
             sqlConnection.Open();
             var value = sqlConnection.Query<T>(procedureName, param,
@@ -55,7 +55,7 @@ namespace BulkyBook.DataAccess.Repository
 
         public IEnumerable<T> List<T>(string procedureName, DynamicParameters param = null)
         {
-            using SqlConnection sqlConnection = new SqlConnection(_connectionString);
+            using var sqlConnection = new SqlConnection(_connectionString);
 
             sqlConnection.Open();
             return sqlConnection.Query<T>(procedureName, param, commandType: System.Data.CommandType.StoredProcedure);
@@ -64,18 +64,15 @@ namespace BulkyBook.DataAccess.Repository
         public Tuple<IEnumerable<T1>, IEnumerable<T2>> List<T1, T2>(string procedureName,
             DynamicParameters param = null)
         {
-            using SqlConnection sqlConnection = new SqlConnection(_connectionString);
+            using var sqlConnection = new SqlConnection(_connectionString);
 
             sqlConnection.Open();
-            var result = SqlMapper.QueryMultiple(sqlConnection, procedureName, param,
+            var result = sqlConnection.QueryMultiple(procedureName, param,
                 commandType: System.Data.CommandType.StoredProcedure);
             var item1 = result.Read<T1>().ToList();
             var item2 = result.Read<T2>().ToList();
 
-            if (item1 != null && item2 != null)
-                return new Tuple<IEnumerable<T1>, IEnumerable<T2>>(item1, item2);
-
-            return new Tuple<IEnumerable<T1>, IEnumerable<T2>>(new List<T1>(), new List<T2>());
+            return new Tuple<IEnumerable<T1>, IEnumerable<T2>>(item1, item2);
         }
     }
 }
