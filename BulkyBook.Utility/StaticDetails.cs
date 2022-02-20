@@ -32,9 +32,9 @@
             var arrayIndex = 0;
             var inside = false;
 
-            foreach (var @let in source)
+            foreach (var let in source)
             {
-                switch (@let)
+                switch (let)
                 {
                     case '<':
                         inside = true;
@@ -46,7 +46,7 @@
 
                 if (inside) continue;
 
-                array[arrayIndex] = @let;
+                array[arrayIndex] = let;
                 arrayIndex++;
             }
             return new string(array, 0, arrayIndex);
