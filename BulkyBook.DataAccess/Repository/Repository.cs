@@ -10,13 +10,11 @@ namespace BulkyBook.DataAccess.Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private readonly ApplicationDbContext _context;
         internal DbSet<T> DbSet;
 
         public Repository(ApplicationDbContext context)
         {
-            _context = context;
-            DbSet = _context.Set<T>();
+            DbSet = context.Set<T>();
         }
 
         public T Get(int id)
@@ -38,10 +36,7 @@ namespace BulkyBook.DataAccess.Repository
                     query = query.Include(includeProperty);
             }
 
-            if (orderBy != null)
-                return orderBy(query).ToList();
-            
-            return query.ToList();
+            return orderBy != null ? orderBy(query).ToList() : query.ToList();
         }
 
         public T GetFirstOrDefault(Expression<Func<T, bool>> filter = null, string includeProperties = null)
@@ -51,11 +46,11 @@ namespace BulkyBook.DataAccess.Repository
             if (filter != null)
                 query = query.Where(filter);
 
-            if (includeProperties != null)
-            {
-                foreach (var includeProperty in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                    query = query.Include(includeProperty);
-            }
+            if (includeProperties == null) 
+                return query.FirstOrDefault();
+
+            foreach (var includeProperty in includeProperties.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                query = query.Include(includeProperty);
 
             return query.FirstOrDefault();
         }

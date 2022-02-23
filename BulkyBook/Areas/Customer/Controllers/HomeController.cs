@@ -96,19 +96,17 @@ namespace BulkyBook.Areas.Customer.Controllers
 
                 return RedirectToAction("Index");
             }
-            else
+
+            var product = _unitOfWork.Product.GetFirstOrDefault(p => p.Id == cart.ProductId,
+                includeProperties: "Category,CoverType");
+
+            var shoppingCart = new ShoppingCart()
             {
-                var product = _unitOfWork.Product.GetFirstOrDefault(p => p.Id == cart.ProductId,
-                    includeProperties: "Category,CoverType");
+                Product = product,
+                ProductId = product.Id
+            };
 
-                var shoppingCart = new ShoppingCart()
-                {
-                    Product = product,
-                    ProductId = product.Id
-                };
-
-                return View(shoppingCart);
-            }
+            return View(shoppingCart);
         }
 
         public IActionResult Privacy()

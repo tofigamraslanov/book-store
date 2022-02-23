@@ -1,9 +1,4 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using BulkyBook.DataAccess.Repository.IRepository;
+﻿using BulkyBook.DataAccess.Repository.IRepository;
 using BulkyBook.Models;
 using BulkyBook.Models.ViewModels;
 using BulkyBook.Utility;
@@ -12,6 +7,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using System;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using Stripe;
 
 namespace BulkyBook.Areas.Customer.Controllers
 {
@@ -22,7 +24,7 @@ namespace BulkyBook.Areas.Customer.Controllers
         private readonly IEmailSender _emailSender;
         private readonly UserManager<IdentityUser> _userManager;
 
-        public ShoppingCartViewModel ShoppingCartViewModel { get; set; }
+        [BindProperty] public ShoppingCartViewModel ShoppingCartViewModel { get; set; }
 
         public CartController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, IEmailSender emailSender)
         {
@@ -67,8 +69,7 @@ namespace BulkyBook.Areas.Customer.Controllers
         [ActionName("Index")]
         public async Task<IActionResult> IndexPost()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier);
+            var claim = GetClaim();
             var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
 
             if (user is null)
@@ -144,6 +145,130 @@ namespace BulkyBook.Areas.Customer.Controllers
             HttpContext.Session.SetInt32(StaticDetails.SessionShoppingCart, count - 1);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult Summary()
+        {
+            var claim = GetClaim();
+
+            ShoppingCartViewModel = new ShoppingCartViewModel()
+            {
+                OrderHeader = new OrderHeader()
+                {
+                    ApplicationUser = _unitOfWork.ApplicationUser
+                        .GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "Company"),
+                },
+                ShoppingCarts = _unitOfWork.ShoppingCart
+                    .GetAll(s => s.ApplicationUserId == claim.Value, includeProperties: "Product")
+            };
+
+            foreach (var shoppingCart in ShoppingCartViewModel.ShoppingCarts)
+            {
+                shoppingCart.Price = StaticDetails.GetPriceBasedOnQuantity(shoppingCart.Count,
+                    shoppingCart.Product.Price, shoppingCart.Product.Price50, shoppingCart.Product.Price100);
+                ShoppingCartViewModel.OrderHeader.OrderTotal += (shoppingCart.Price * shoppingCart.Count);
+            }
+
+            ShoppingCartViewModel.OrderHeader.Name = ShoppingCartViewModel.OrderHeader.ApplicationUser.Name;
+            ShoppingCartViewModel.OrderHeader.PhoneNumber =
+                ShoppingCartViewModel.OrderHeader.ApplicationUser.PhoneNumber;
+            ShoppingCartViewModel.OrderHeader.StreetAddress =
+                ShoppingCartViewModel.OrderHeader.ApplicationUser.StreetAddress;
+            ShoppingCartViewModel.OrderHeader.City = ShoppingCartViewModel.OrderHeader.ApplicationUser.City;
+            ShoppingCartViewModel.OrderHeader.State = ShoppingCartViewModel.OrderHeader.ApplicationUser.State;
+            ShoppingCartViewModel.OrderHeader.PostalCode = ShoppingCartViewModel.OrderHeader.ApplicationUser.PostalCode;
+
+            return View(ShoppingCartViewModel);
+        }
+
+        [HttpPost]
+        [ActionName("Summary")]
+        [ValidateAntiForgeryToken]
+        public IActionResult SummaryPost(string stripeToken)
+        {
+            var claim = GetClaim();
+            ShoppingCartViewModel.OrderHeader.ApplicationUser =
+                _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "Company");
+            ShoppingCartViewModel.ShoppingCarts =
+                _unitOfWork.ShoppingCart.GetAll(c => c.ApplicationUserId == claim.Value, includeProperties: "Product");
+
+            ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusPending;
+            ShoppingCartViewModel.OrderHeader.OrderStatus = StaticDetails.StatusPending;
+            ShoppingCartViewModel.OrderHeader.ApplicationUserId = claim.Value;
+            ShoppingCartViewModel.OrderHeader.OrderDate = DateTime.Now;
+
+            _unitOfWork.OrderHeader.Add(ShoppingCartViewModel.OrderHeader);
+            _unitOfWork.Save();
+
+            foreach (var shoppingCart in ShoppingCartViewModel.ShoppingCarts)
+            {
+                shoppingCart.Price = StaticDetails.GetPriceBasedOnQuantity(shoppingCart.Count,
+                    shoppingCart.Product.Price, shoppingCart.Product.Price50, shoppingCart.Product.Price100);
+                OrderDetails orderDetails = new()
+                {
+                    ProductId = shoppingCart.ProductId,
+                    OrderId = ShoppingCartViewModel.OrderHeader.Id,
+                    Price = shoppingCart.Price,
+                    Count = shoppingCart.Count
+                };
+                ShoppingCartViewModel.OrderHeader.OrderTotal += orderDetails.Count * orderDetails.Price;
+                _unitOfWork.OrderDetails.Add(orderDetails);
+            }
+
+            _unitOfWork.ShoppingCart.RemoveRange(ShoppingCartViewModel.ShoppingCarts);
+            _unitOfWork.Save();
+            HttpContext.Session.SetInt32(StaticDetails.SessionShoppingCart, 0);
+
+            if (stripeToken == null)
+            {
+                // Order will be created for delayed payment for authorized company
+                ShoppingCartViewModel.OrderHeader.PaymentDueDate = DateTime.Now.AddDays(30);
+                ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusDelayedPayment;
+                ShoppingCartViewModel.OrderHeader.OrderStatus = StaticDetails.StatusApproved;
+            }
+            else
+            {
+                // Process the payment
+                var options = new ChargeCreateOptions()
+                {
+                    Amount = Convert.ToInt32(ShoppingCartViewModel.OrderHeader.OrderTotal * 100),
+                    Currency = "usd",
+                    Description = $"Order ID: {ShoppingCartViewModel.OrderHeader.Id}",
+                    Source = stripeToken
+                };
+
+                var service = new ChargeService();
+                var charge = service.Create(options);
+
+                if (charge.BalanceTransactionId == null)
+                    ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusRejected;
+                else
+                    ShoppingCartViewModel.OrderHeader.TransactionId = charge.BalanceTransactionId;
+
+                if (charge.Status.ToLower() == "succeeded")
+                {
+                    ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusApproved;
+                    ShoppingCartViewModel.OrderHeader.OrderStatus = StaticDetails.StatusApproved;
+                    ShoppingCartViewModel.OrderHeader.PaymentDate = DateTime.Now;
+                }
+            }
+
+            _unitOfWork.Save();
+
+            return RedirectToAction("OrderConfirmation", "Cart", new { id = ShoppingCartViewModel.OrderHeader.Id });
+        }
+
+        public IActionResult OrderConfirmation(int id)
+        {
+            return View(id);
+        }
+
+        private Claim GetClaim()
+        {
+            var claimsIdentity = (ClaimsIdentity)User.Identity;
+            var claim = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier);
+
+            return claim;
         }
     }
 }
