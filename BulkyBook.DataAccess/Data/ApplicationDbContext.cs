@@ -1,4 +1,4 @@
-﻿using BulkyBook.Models;
+﻿using BulkyBook.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace BulkyBook.Models
+namespace BulkyBook.Entities
 {
     public class Company
     {

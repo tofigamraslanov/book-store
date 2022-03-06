@@ -2,9 +2,9 @@
 using System.IO;
 using System.Linq;
 using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Models;
-using BulkyBook.Models.ViewModels;
-using BulkyBook.Utility;
+using BulkyBook.Entities;
+using BulkyBook.Utilities;
+using BulkyBook.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;

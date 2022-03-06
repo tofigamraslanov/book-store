@@ -1,13 +1,13 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Models;
-using BulkyBook.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
-using BulkyBook.Utility;
+using BulkyBook.Entities;
+using BulkyBook.Utilities;
+using BulkyBook.ViewModels;
 using Microsoft.AspNetCore.Http;
 
 namespace BulkyBook.Areas.Customer.Controllers

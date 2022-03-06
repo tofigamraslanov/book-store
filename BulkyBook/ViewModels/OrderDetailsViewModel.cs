@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
+using BulkyBook.Entities;
 
-namespace BulkyBook.Models.ViewModels
+namespace BulkyBook.ViewModels
 {
     public class OrderDetailsViewModel
     {

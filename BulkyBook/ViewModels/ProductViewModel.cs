@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using BulkyBook.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BulkyBook.Models.ViewModels
+namespace BulkyBook.ViewModels
 {
     public class ProductViewModel
     {

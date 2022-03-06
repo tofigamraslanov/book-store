@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace BulkyBook.Utility
+namespace BulkyBook.Utilities
 {
     public static class SessionExtension
     {

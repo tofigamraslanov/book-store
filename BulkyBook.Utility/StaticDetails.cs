@@ -1,4 +1,4 @@
-﻿namespace BulkyBook.Utility
+﻿namespace BulkyBook.Utilities
 {
     public static class StaticDetails
     {

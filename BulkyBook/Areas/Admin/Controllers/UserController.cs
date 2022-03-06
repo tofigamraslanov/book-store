@@ -1,10 +1,10 @@
 ﻿using BulkyBook.DataAccess.Data;
-using BulkyBook.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
-using BulkyBook.Utility;
+using BulkyBook.Entities;
+using BulkyBook.Utilities;
 using Microsoft.AspNetCore.Authorization;
 
 namespace BulkyBook.Areas.Admin.Controllers

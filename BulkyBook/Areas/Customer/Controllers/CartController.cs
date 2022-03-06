@@ -1,7 +1,4 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Models;
-using BulkyBook.Models.ViewModels;
-using BulkyBook.Utility;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -13,6 +10,9 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using BulkyBook.Entities;
+using BulkyBook.Utilities;
+using BulkyBook.ViewModels;
 using Stripe;
 
 namespace BulkyBook.Areas.Customer.Controllers

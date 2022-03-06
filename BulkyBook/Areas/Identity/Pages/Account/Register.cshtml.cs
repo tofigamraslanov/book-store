@@ -13,8 +13,8 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Models;
-using BulkyBook.Utility;
+using BulkyBook.Entities;
+using BulkyBook.Utilities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BulkyBook.Areas.Identity.Pages.Account

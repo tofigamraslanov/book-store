@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace BulkyBook.Models
+namespace BulkyBook.Entities
 {
     public class OrderDetails
     {

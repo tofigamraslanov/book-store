@@ -1,7 +1,8 @@
-﻿@model BulkyBook.Models.ViewModels.ShoppingCartViewModel
+﻿@model BulkyBook.ViewModels.ShoppingCartViewModel
 @using Microsoft.Extensions.Options
+@using BulkyBook.Utilities
 
-@inject IOptions<BulkyBook.Utility.StripeOptions> _stripeOptions
+@inject IOptions<StripeOptions> _stripeOptions
 
 <form method="post">
     <br/>

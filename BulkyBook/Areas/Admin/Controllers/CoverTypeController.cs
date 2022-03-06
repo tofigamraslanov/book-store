@@ -1,6 +1,6 @@
 ﻿using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Models;
-using BulkyBook.Utility;
+using BulkyBook.Entities;
+using BulkyBook.Utilities;
 using Dapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

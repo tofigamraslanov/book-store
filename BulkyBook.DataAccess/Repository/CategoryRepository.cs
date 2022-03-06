@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using BulkyBook.DataAccess.Data;
 using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Models;
+using BulkyBook.Entities;
 
 namespace BulkyBook.DataAccess.Repository
 {

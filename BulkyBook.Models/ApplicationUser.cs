@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
 
-namespace BulkyBook.Models
+namespace BulkyBook.Entities
 {
     public class ApplicationUser : IdentityUser
     {
