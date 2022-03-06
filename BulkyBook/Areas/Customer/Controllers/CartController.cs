@@ -24,7 +24,8 @@ namespace BulkyBook.Areas.Customer.Controllers
         private readonly IEmailSender _emailSender;
         private readonly UserManager<IdentityUser> _userManager;
 
-        [BindProperty] public ShoppingCartViewModel ShoppingCartViewModel { get; set; }
+        [BindProperty] 
+        public ShoppingCartViewModel ShoppingCartViewModel { get; set; }
 
         public CartController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, IEmailSender emailSender)
         {
@@ -35,8 +36,7 @@ namespace BulkyBook.Areas.Customer.Controllers
 
         public IActionResult Index()
         {
-            var claimsIdentity = (ClaimsIdentity)User.Identity;
-            var claim = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier);
+            var claim = GetClaim();
 
             ShoppingCartViewModel = new ShoppingCartViewModel()
             {
@@ -187,20 +187,24 @@ namespace BulkyBook.Areas.Customer.Controllers
         public IActionResult SummaryPost(string stripeToken)
         {
             var claim = GetClaim();
+
             ShoppingCartViewModel.OrderHeader.ApplicationUser =
                 _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "Company");
+
             ShoppingCartViewModel.ShoppingCarts =
                 _unitOfWork.ShoppingCart.GetAll(c => c.ApplicationUserId == claim.Value, includeProperties: "Product");
 
             ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusPending;
             ShoppingCartViewModel.OrderHeader.OrderStatus = StaticDetails.StatusPending;
-            ShoppingCartViewModel.OrderHeader.ApplicationUserId = claim.Value;
+            ShoppingCartViewModel.OrderHeader.ApplicationUserId = claim?.Value;
             ShoppingCartViewModel.OrderHeader.OrderDate = DateTime.Now;
 
             _unitOfWork.OrderHeader.Add(ShoppingCartViewModel.OrderHeader);
             _unitOfWork.Save();
 
-            foreach (var shoppingCart in ShoppingCartViewModel.ShoppingCarts)
+            var shoppingCarts = ShoppingCartViewModel.ShoppingCarts.ToList();
+
+            foreach (var shoppingCart in shoppingCarts)
             {
                 shoppingCart.Price = StaticDetails.GetPriceBasedOnQuantity(shoppingCart.Count,
                     shoppingCart.Product.Price, shoppingCart.Product.Price50, shoppingCart.Product.Price100);
@@ -215,7 +219,7 @@ namespace BulkyBook.Areas.Customer.Controllers
                 _unitOfWork.OrderDetails.Add(orderDetails);
             }
 
-            _unitOfWork.ShoppingCart.RemoveRange(ShoppingCartViewModel.ShoppingCarts);
+            _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
             _unitOfWork.Save();
             HttpContext.Session.SetInt32(StaticDetails.SessionShoppingCart, 0);
 
@@ -225,7 +229,7 @@ namespace BulkyBook.Areas.Customer.Controllers
                 ShoppingCartViewModel.OrderHeader.PaymentDueDate = DateTime.Now.AddDays(30);
                 ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusDelayedPayment;
                 ShoppingCartViewModel.OrderHeader.OrderStatus = StaticDetails.StatusApproved;
-            }
+            }   
             else
             {
                 // Process the payment
@@ -240,10 +244,10 @@ namespace BulkyBook.Areas.Customer.Controllers
                 var service = new ChargeService();
                 var charge = service.Create(options);
 
-                if (charge.BalanceTransactionId == null)
+                if (charge.Id == null)
                     ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusRejected;
                 else
-                    ShoppingCartViewModel.OrderHeader.TransactionId = charge.BalanceTransactionId;
+                    ShoppingCartViewModel.OrderHeader.TransactionId = charge.Id;
 
                 if (charge.Status.ToLower() == "succeeded")
                 {
