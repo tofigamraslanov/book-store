@@ -168,9 +168,17 @@ body {
     color: white;
 }
 
+.facebook-btn:hover {
+    color: white !important;
+}
+
 .google-btn {
     background-color: #dd4b39;
     color: white;
+}
+
+.google-btn:hover {
+    color: white !important;
 }
 
 #logreg-forms .form-reset, #logreg-forms .form-signup { display: none; }
