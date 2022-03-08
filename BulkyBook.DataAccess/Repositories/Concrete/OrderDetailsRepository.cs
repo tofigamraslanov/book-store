@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using BulkyBook.DataAccess.Data;
-using BulkyBook.DataAccess.Repository.IRepository;
+﻿using BulkyBook.DataAccess.Data;
+using BulkyBook.DataAccess.Repositories.Abstract;
 using BulkyBook.Entities;
 
-namespace BulkyBook.DataAccess.Repository
+namespace BulkyBook.DataAccess.Repositories.Concrete
 {
     public class OrderDetailsRepository : Repository<OrderDetails>, IOrderDetailsRepository
     {

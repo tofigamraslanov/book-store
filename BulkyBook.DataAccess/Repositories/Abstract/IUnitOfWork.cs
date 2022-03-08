@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BulkyBook.DataAccess.Repository.IRepository
+namespace BulkyBook.DataAccess.Repositories.Abstract
 {
     public interface IUnitOfWork : IDisposable
     {

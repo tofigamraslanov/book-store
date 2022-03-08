@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using BulkyBook.DataAccess.Repository.IRepository;
+using BulkyBook.DataAccess.Repositories.Abstract;
 using BulkyBook.Entities;
 using BulkyBook.Utilities;
-using BulkyBook.ViewModels;
+using BulkyBookWeb.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 
-namespace BulkyBook.Areas.Admin.Controllers
+namespace BulkyBookWeb.Areas.Admin.Controllers
 {
     [Authorize]
     [Area("Admin")]

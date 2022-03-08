@@ -1,9 +1,13 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using BulkyBook.DataAccess.Repositories.Abstract;
+using BulkyBook.Entities;
+using BulkyBook.Utilities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -12,12 +16,8 @@ using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using BulkyBook.DataAccess.Repository.IRepository;
-using BulkyBook.Entities;
-using BulkyBook.Utilities;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BulkyBook.Areas.Identity.Pages.Account
+namespace BulkyBookWeb.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
     public class RegisterModel : PageModel

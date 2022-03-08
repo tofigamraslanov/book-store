@@ -7,7 +7,7 @@ using BulkyBook.Entities;
 using BulkyBook.Utilities;
 using Microsoft.AspNetCore.Authorization;
 
-namespace BulkyBook.Areas.Admin.Controllers
+namespace BulkyBookWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = StaticDetails.RoleAdmin + "," + StaticDetails.RoleEmployee)]

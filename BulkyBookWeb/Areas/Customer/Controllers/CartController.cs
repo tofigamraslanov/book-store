@@ -1,21 +1,21 @@
-﻿using BulkyBook.DataAccess.Repository.IRepository;
+﻿using BulkyBook.DataAccess.Repositories.Abstract;
+using BulkyBook.Entities;
+using BulkyBook.Utilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Stripe;
 using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using BulkyBook.Entities;
-using BulkyBook.Utilities;
-using BulkyBook.ViewModels;
-using Stripe;
+using BulkyBookWeb.ViewModels;
 
-namespace BulkyBook.Areas.Customer.Controllers
+namespace BulkyBookWeb.Areas.Customer.Controllers
 {
     [Area("Customer")]
     public class CartController : Controller

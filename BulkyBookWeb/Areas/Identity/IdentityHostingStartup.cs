@@ -1,14 +1,8 @@
-﻿using System;
-using BulkyBook.DataAccess.Data;
+﻿using BulkyBookWeb.Areas.Identity;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 
-[assembly: HostingStartup(typeof(BulkyBook.Areas.Identity.IdentityHostingStartup))]
-namespace BulkyBook.Areas.Identity
+[assembly: HostingStartup(typeof(IdentityHostingStartup))]
+namespace BulkyBookWeb.Areas.Identity
 {
     public class IdentityHostingStartup : IHostingStartup
     {

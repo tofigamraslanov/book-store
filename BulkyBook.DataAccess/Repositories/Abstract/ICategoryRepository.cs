@@ -1,6 +1,6 @@
 ﻿using BulkyBook.Entities;
 
-namespace BulkyBook.DataAccess.Repository.IRepository
+namespace BulkyBook.DataAccess.Repositories.Abstract
 {
     public interface ICategoryRepository : IRepository<Category>
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Dapper;
 
-namespace BulkyBook.DataAccess.Repository.IRepository
+namespace BulkyBook.DataAccess.Repositories.Abstract
 {
     public interface IStoredProcedureCall : IDisposable
     {

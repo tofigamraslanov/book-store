@@ -1,7 +1,6 @@
-using System;
 using BulkyBook.DataAccess.Data;
-using BulkyBook.DataAccess.Repository;
-using BulkyBook.DataAccess.Repository.IRepository;
+using BulkyBook.DataAccess.Repositories.Abstract;
+using BulkyBook.DataAccess.Repositories.Concrete;
 using BulkyBook.Utilities;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,8 +11,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Stripe;
+using System;
 
-namespace BulkyBook
+namespace BulkyBookWeb
 {
     public class Startup
     {

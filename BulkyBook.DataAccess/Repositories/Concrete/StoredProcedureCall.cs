@@ -1,13 +1,13 @@
 ﻿using BulkyBook.DataAccess.Data;
-using BulkyBook.DataAccess.Repository.IRepository;
 using Dapper;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BulkyBook.DataAccess.Repositories.Abstract;
 using Microsoft.Data.SqlClient;
 
-namespace BulkyBook.DataAccess.Repository
+namespace BulkyBook.DataAccess.Repositories.Concrete
 {
     public class StoredProcedureCall : IStoredProcedureCall
     {

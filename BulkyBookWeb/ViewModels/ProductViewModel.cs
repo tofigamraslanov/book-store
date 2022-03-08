@@ -2,7 +2,7 @@
 using BulkyBook.Entities;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace BulkyBook.ViewModels
+namespace BulkyBookWeb.ViewModels
 {
     public class ProductViewModel
     {

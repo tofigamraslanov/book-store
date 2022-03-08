@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BulkyBook.Entities;
 
-namespace BulkyBook.ViewModels
+namespace BulkyBookWeb.ViewModels
 {
     public class ShoppingCartViewModel
     {

@@ -1,16 +1,16 @@
-﻿using BulkyBook.DataAccess.Repository.IRepository;
+﻿using BulkyBook.DataAccess.Repositories.Abstract;
+using BulkyBook.Entities;
+using BulkyBook.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Linq;
 using System.Security.Claims;
-using BulkyBook.Entities;
-using BulkyBook.Utilities;
-using BulkyBook.ViewModels;
-using Microsoft.AspNetCore.Http;
+using BulkyBookWeb.ViewModels;
 
-namespace BulkyBook.Areas.Customer.Controllers
+namespace BulkyBookWeb.Areas.Customer.Controllers
 {
     [Area("Customer")]
     public class HomeController : Controller

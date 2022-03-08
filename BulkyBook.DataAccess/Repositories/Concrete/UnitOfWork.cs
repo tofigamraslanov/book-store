@@ -1,7 +1,7 @@
 ﻿using BulkyBook.DataAccess.Data;
-using BulkyBook.DataAccess.Repository.IRepository;
+using BulkyBook.DataAccess.Repositories.Abstract;
 
-namespace BulkyBook.DataAccess.Repository
+namespace BulkyBook.DataAccess.Repositories.Concrete
 {
     public class UnitOfWork : IUnitOfWork
     {
