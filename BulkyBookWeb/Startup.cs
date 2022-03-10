@@ -39,9 +39,11 @@ namespace BulkyBookWeb
 
             services.Configure<EmailOptions>(Configuration.GetSection(EmailOptions.Email));
             services.Configure<StripeOptions>(Configuration.GetSection(StripeOptions.Stripe));
+            services.Configure<TwilioOptions>(Configuration.GetSection(TwilioOptions.Twilio));
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Identity/Account/Login";

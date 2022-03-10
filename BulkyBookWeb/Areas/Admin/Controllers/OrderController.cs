@@ -18,7 +18,8 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
 
-        [BindProperty] public OrderDetailsViewModel OrderDetailsViewModel { get; set; }
+        [BindProperty] 
+        public OrderDetailsViewModel OrderDetailsViewModel { get; set; }
 
         public OrderController(IUnitOfWork unitOfWork)
         {

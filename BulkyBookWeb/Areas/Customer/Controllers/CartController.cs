@@ -14,6 +14,9 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using BulkyBookWeb.ViewModels;
+using Microsoft.Extensions.Options;
+using Twilio;
+using Twilio.Rest.Api.V2010.Account;
 
 namespace BulkyBookWeb.Areas.Customer.Controllers
 {
@@ -23,15 +26,18 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IEmailSender _emailSender;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly TwilioOptions _twilioOptions;
 
         [BindProperty] 
         public ShoppingCartViewModel ShoppingCartViewModel { get; set; }
 
-        public CartController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, IEmailSender emailSender)
+        public CartController(IUnitOfWork unitOfWork, UserManager<IdentityUser> userManager, IEmailSender emailSender,
+            IOptions<TwilioOptions> twilioOptions)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _emailSender = emailSender;
+            _twilioOptions = twilioOptions.Value;
         }
 
         public IActionResult Index()
@@ -229,7 +235,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 ShoppingCartViewModel.OrderHeader.PaymentDueDate = DateTime.Now.AddDays(30);
                 ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusDelayedPayment;
                 ShoppingCartViewModel.OrderHeader.OrderStatus = StaticDetails.StatusApproved;
-            }   
+            }
             else
             {
                 // Process the payment
@@ -264,6 +270,24 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         public IActionResult OrderConfirmation(int id)
         {
+            var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(o => o.Id == id);
+
+            TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
+
+            try
+            {
+                var message = MessageResource.Create(
+                    body: "Order placed on Bulky Book. Your order id: " + id,
+                    from: new Twilio.Types.PhoneNumber(_twilioOptions.PhoneNumber),
+                    to: new Twilio.Types.PhoneNumber(orderHeader.PhoneNumber)
+                );
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
             return View(id);
         }
 
