@@ -1,4 +1,5 @@
-﻿using BulkyBook.DataAccess.Repositories.Abstract;
+﻿using System.Threading.Tasks;
+using BulkyBook.DataAccess.Repositories.Abstract;
 using BulkyBook.Entities;
 using BulkyBook.Utilities;
 using Microsoft.AspNetCore.Authorization;
@@ -22,14 +23,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return View();
         }
 
-        public IActionResult Upsert(int? id)
+        public async Task<IActionResult> Upsert(int? id)
         {
             var category = new Category();
 
             if (id == null)
                 return View(category);
 
-            category = _unitOfWork.Category.Get(id.GetValueOrDefault());
+            category =await _unitOfWork.CategoryRepositoryAsync.GetAsync(id.GetValueOrDefault());
 
             if (category == null)
                 return NotFound();
@@ -39,14 +40,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(Category category)
+        public async Task<IActionResult> Upsert(Category category)
         {
             if (!ModelState.IsValid) return View(category);
 
             if (category.Id == 0)
-                _unitOfWork.Category.Add(category);
+               await _unitOfWork.CategoryRepositoryAsync.AddAsync(category);
             else
-                _unitOfWork.Category.Update(category);
+               await _unitOfWork.CategoryRepositoryAsync.UpdateAsync(category);
 
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
@@ -55,20 +56,20 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         #region API CALLS
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var categories = _unitOfWork.Category.GetAll();
+            var categories = await _unitOfWork.CategoryRepositoryAsync.GetAllAsync();
             return Json(new { data = categories });
         }
 
         [HttpDelete]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var category = _unitOfWork.Category.Get(id);
+            var category =await _unitOfWork.CategoryRepositoryAsync.GetAsync(id);
             if (category == null)
                 return Json(new { success = false, message = "Error while deleting" });
 
-            _unitOfWork.Category.Remove(category);
+            await _unitOfWork.CategoryRepositoryAsync.RemoveAsync(category);
             _unitOfWork.Save();
 
             return Json(new { success = true, message = "Delete successful" });

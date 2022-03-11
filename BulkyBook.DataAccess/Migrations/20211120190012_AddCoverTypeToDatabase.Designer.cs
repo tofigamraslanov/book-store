@@ -38,7 +38,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.CoverType", b =>
+            modelBuilder.Entity("BulkyBook.Models.CoverTypeRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

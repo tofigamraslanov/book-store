@@ -36,8 +36,8 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             OrderDetailsViewModel = new OrderDetailsViewModel()
             {
                 OrderHeader =
-                    _unitOfWork.OrderHeader.GetFirstOrDefault(h => h.Id == id, includeProperties: "ApplicationUser"),
-                OrderDetails = _unitOfWork.OrderDetails.GetAll(d => d.OrderId == id, includeProperties: "Product")
+                    _unitOfWork.OrderHeaderRepository.GetFirstOrDefault(h => h.Id == id, includeProperties: "ApplicationUser"),
+                OrderDetails = _unitOfWork.OrderDetailsRepository.GetAll(d => d.OrderId == id, includeProperties: "Product")
             };
 
             return View(OrderDetailsViewModel);
@@ -49,7 +49,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult Details(string stripeToken)
         {
             var orderHeader =
-                _unitOfWork.OrderHeader.GetFirstOrDefault(o => o.Id == OrderDetailsViewModel.OrderHeader.Id,
+                _unitOfWork.OrderHeaderRepository.GetFirstOrDefault(o => o.Id == OrderDetailsViewModel.OrderHeader.Id,
                     includeProperties: "ApplicationUser");
 
             if (stripeToken != null)
@@ -86,7 +86,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         [Authorize(Roles = StaticDetails.RoleAdmin + "," + StaticDetails.RoleEmployee)]
         public IActionResult StartProcessing(int id)
         {
-            var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(o => o.Id == id);
+            var orderHeader = _unitOfWork.OrderHeaderRepository.GetFirstOrDefault(o => o.Id == id);
             orderHeader.OrderStatus = StaticDetails.StatusInProcess;
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
@@ -97,7 +97,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         public IActionResult ShipOrder()
         {
             var orderHeader =
-                _unitOfWork.OrderHeader.GetFirstOrDefault(o => o.Id == OrderDetailsViewModel.OrderHeader.Id);
+                _unitOfWork.OrderHeaderRepository.GetFirstOrDefault(o => o.Id == OrderDetailsViewModel.OrderHeader.Id);
 
             orderHeader.TrackingNumber = OrderDetailsViewModel.OrderHeader.TrackingNumber;
             orderHeader.Carrier = OrderDetailsViewModel.OrderHeader.Carrier;
@@ -111,7 +111,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         [Authorize(Roles = StaticDetails.RoleAdmin + "," + StaticDetails.RoleEmployee)]
         public IActionResult CancelOrder(int id)
         {
-            var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(o => o.Id == id);
+            var orderHeader = _unitOfWork.OrderHeaderRepository.GetFirstOrDefault(o => o.Id == id);
 
             if (orderHeader.PaymentStatus == StaticDetails.StatusApproved)
             {
@@ -148,9 +148,9 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             IEnumerable<OrderHeader> orderHeaders;
 
             if (User.IsInRole(StaticDetails.RoleAdmin) || User.IsInRole(StaticDetails.RoleEmployee))
-                orderHeaders = _unitOfWork.OrderHeader.GetAll(includeProperties: "ApplicationUser");
+                orderHeaders = _unitOfWork.OrderHeaderRepository.GetAll(includeProperties: "ApplicationUser");
             else
-                orderHeaders = _unitOfWork.OrderHeader.GetAll(
+                orderHeaders = _unitOfWork.OrderHeaderRepository.GetAll(
                     o => o.ApplicationUserId == claim.Value,
                     includeProperties: "ApplicationUser");
 

@@ -2,7 +2,7 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var title = "Create Company";
+    var title = "Create CompanyRepository";
 }
 
 <form method="post">
@@ -10,7 +10,7 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         @if (Model.Id != 0)
         {
-            title = "Edit Company";
+            title = "Edit CompanyRepository";
         }
         <div class="col-12 border-bottom">
             <h2 class="text-primary">@title</h2>

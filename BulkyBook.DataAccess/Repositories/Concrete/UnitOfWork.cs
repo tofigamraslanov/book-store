@@ -10,25 +10,25 @@ namespace BulkyBook.DataAccess.Repositories.Concrete
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
-            Category = new CategoryRepository(_context);
-            CoverType = new CoverTypeRepository(_context);
-            Product = new ProductRepository(_context);
-            Company = new CompanyRepository(_context);
-            ApplicationUser = new ApplicationUserRepository(_context);
-            ShoppingCart = new ShoppingCartRepository(_context);
-            OrderHeader = new OrderHeaderRepository(_context);
-            OrderDetails = new OrderDetailsRepository(_context);
+            CategoryRepositoryAsync = new CategoryRepositoryAsync(_context);
+            CoverTypeRepository = new CoverTypeRepository(_context);
+            ProductRepository = new ProductRepository(_context);
+            CompanyRepository = new CompanyRepository(_context);
+            ApplicationUserRepository = new ApplicationUserRepository(_context);
+            ShoppingCartRepository = new ShoppingCartRepository(_context);
+            OrderHeaderRepository = new OrderHeaderRepository(_context);
+            OrderDetailsRepository = new OrderDetailsRepository(_context);
             StoredProcedureCall = new StoredProcedureCall(_context);
         }
 
-        public ICategoryRepository Category { get; }
-        public IProductRepository Product { get; }
-        public ICompanyRepository Company { get; }
-        public ICoverTypeRepository CoverType { get; }
-        public IApplicationUserRepository ApplicationUser { get; }
-        public IShoppingCartRepository ShoppingCart { get; }
-        public IOrderHeaderRepository OrderHeader { get; }
-        public IOrderDetailsRepository OrderDetails { get; }
+        public ICategoryRepositoryAsync CategoryRepositoryAsync { get; }
+        public IProductRepository ProductRepository { get; }
+        public ICompanyRepository CompanyRepository { get; }
+        public ICoverTypeRepository CoverTypeRepository { get; }
+        public IApplicationUserRepository ApplicationUserRepository { get; }
+        public IShoppingCartRepository ShoppingCartRepository { get; }
+        public IOrderHeaderRepository OrderHeaderRepository { get; }
+        public IOrderDetailsRepository OrderDetailsRepository { get; }
         public IStoredProcedureCall StoredProcedureCall { get; }
 
         public void Dispose()

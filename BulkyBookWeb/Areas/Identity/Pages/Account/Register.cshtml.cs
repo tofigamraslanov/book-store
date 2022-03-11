@@ -88,7 +88,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             ReturnUrl = returnUrl;
             Input = new InputModel
             {
-                CompanyList = _unitOfWork.Company.GetAll().Select(c => new SelectListItem
+                CompanyList = _unitOfWork.CompanyRepository.GetAll().Select(c => new SelectListItem
                 {
                     Text = c.Name,
                     Value = c.Id.ToString()
@@ -184,7 +184,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
 
             Input = new InputModel
             {
-                CompanyList = _unitOfWork.Company.GetAll()
+                CompanyList = _unitOfWork.CompanyRepository.GetAll()
                     .Select(c => new SelectListItem
                     {
                         Text = c.Name,

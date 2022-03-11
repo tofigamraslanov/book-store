@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using System.Threading.Tasks;
 using BulkyBook.Entities;
 using BulkyBook.Utilities;
 using Microsoft.AspNetCore.Authorization;
@@ -31,17 +33,19 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             return View();
         }
 
-        public IActionResult Upsert(int? id)
+        public async Task<IActionResult> Upsert(int? id)
         {
+            IEnumerable<Category> categories = await _unitOfWork.CategoryRepositoryAsync.GetAllAsync();
+
             var productViewModel = new ProductViewModel
             {
                 Product = new Product(),
-                CategoryList = _unitOfWork.Category.GetAll().Select(c => new SelectListItem
+                CategoryList = categories.Select(c => new SelectListItem
                 {
                     Text = c.Name,
                     Value = c.Id.ToString()
                 }),
-                CoverTypeList = _unitOfWork.CoverType.GetAll().Select(c => new SelectListItem
+                CoverTypeList = _unitOfWork.CoverTypeRepository.GetAll().Select(c => new SelectListItem
                 {
                     Text = c.Name,
                     Value = c.Id.ToString()
@@ -51,7 +55,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             if (id == null)
                 return View(productViewModel);
 
-            productViewModel.Product = _unitOfWork.Product.Get(id.GetValueOrDefault());
+            productViewModel.Product = _unitOfWork.ProductRepository.Get(id.GetValueOrDefault());
 
             if (productViewModel.Product == null)
                 return NotFound();
@@ -61,8 +65,10 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Upsert(ProductViewModel productViewModel)
+        public async Task<IActionResult> Upsert(ProductViewModel productViewModel)
         {
+            IEnumerable<Category> categories = await _unitOfWork.CategoryRepositoryAsync.GetAllAsync();
+
             if (ModelState.IsValid)
             {
                 var webRootPath = _hostEnvironment.WebRootPath;
@@ -96,33 +102,33 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                     // update when they do not change the image
                     if (productViewModel.Product.Id != 0)
                     {
-                        var product = _unitOfWork.Product.Get(productViewModel.Product.Id);
+                        var product = _unitOfWork.ProductRepository.Get(productViewModel.Product.Id);
                         productViewModel.Product.ImageUrl = product.ImageUrl;
                     }
                 }
 
                 if (productViewModel.Product.Id == 0)
-                    _unitOfWork.Product.Add(productViewModel.Product);
+                    _unitOfWork.ProductRepository.Add(productViewModel.Product);
                 else
-                    _unitOfWork.Product.Update(productViewModel.Product);
+                    _unitOfWork.ProductRepository.Update(productViewModel.Product);
 
                 _unitOfWork.Save();
                 return RedirectToAction("Index");
             }
 
-            productViewModel.CategoryList = _unitOfWork.Category.GetAll().Select(c => new SelectListItem
+            productViewModel.CategoryList = categories.Select(c => new SelectListItem
             {
                 Text = c.Name,
                 Value = c.Id.ToString()
             });
-            productViewModel.CoverTypeList = _unitOfWork.CoverType.GetAll().Select(c => new SelectListItem
+            productViewModel.CoverTypeList = _unitOfWork.CoverTypeRepository.GetAll().Select(c => new SelectListItem
             {
                 Text = c.Name,
                 Value = c.Id.ToString()
             });
             if (productViewModel.Product.Id != 0)
             {
-                productViewModel.Product = _unitOfWork.Product.Get(productViewModel.Product.Id);
+                productViewModel.Product = _unitOfWork.ProductRepository.Get(productViewModel.Product.Id);
             }
             return View(productViewModel);
         }
@@ -132,14 +138,14 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var products = _unitOfWork.Product.GetAll(includeProperties: "Category,CoverType");
+            var products = _unitOfWork.ProductRepository.GetAll(includeProperties: "Category,CoverType");
             return Json(new { data = products });
         }
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var productFromDb = _unitOfWork.Product.Get(id);
+            var productFromDb = _unitOfWork.ProductRepository.Get(id);
 
             if (productFromDb == null)
                 return Json(new { success = false, message = "Error while deleting!" });
@@ -150,7 +156,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             {
                 System.IO.File.Delete(imagePath);
             }
-            _unitOfWork.Product.Remove(productFromDb);
+            _unitOfWork.ProductRepository.Remove(productFromDb);
             _unitOfWork.Save();
 
             return Json(new { success = true, message = "Delete successful" });

@@ -38,7 +38,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.CoverType", b =>
+            modelBuilder.Entity("BulkyBook.Models.CoverTypeRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -55,7 +55,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("CoverTypes");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.Product", b =>
+            modelBuilder.Entity("BulkyBook.Models.ProductRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -304,7 +304,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.Product", b =>
+            modelBuilder.Entity("BulkyBook.Models.ProductRepository", b =>
                 {
                     b.HasOne("BulkyBook.Models.Category", "Category")
                         .WithMany()
@@ -312,7 +312,7 @@ namespace BulkyBook.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BulkyBook.Models.CoverType", "CoverType")
+                    b.HasOne("BulkyBook.Models.CoverTypeRepository", "CoverTypeRepository")
                         .WithMany()
                         .HasForeignKey("CoverTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -320,7 +320,7 @@ namespace BulkyBook.DataAccess.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("CoverType");
+                    b.Navigation("CoverTypeRepository");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

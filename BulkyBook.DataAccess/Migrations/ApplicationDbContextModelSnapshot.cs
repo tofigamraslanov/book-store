@@ -36,7 +36,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.Company", b =>
+            modelBuilder.Entity("BulkyBook.Models.CompanyRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -70,7 +70,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("Companies");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.CoverType", b =>
+            modelBuilder.Entity("BulkyBook.Models.CoverTypeRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -87,7 +87,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("CoverTypes");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.OrderDetails", b =>
+            modelBuilder.Entity("BulkyBook.Models.OrderDetailsRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -112,10 +112,10 @@ namespace BulkyBook.DataAccess.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderDetails");
+                    b.ToTable("OrderDetailsRepository");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.OrderHeader", b =>
+            modelBuilder.Entity("BulkyBook.Models.OrderHeaderRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -186,7 +186,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("OrderHeaders");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.Product", b =>
+            modelBuilder.Entity("BulkyBook.Models.ProductRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -238,7 +238,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.ShoppingCart", b =>
+            modelBuilder.Entity("BulkyBook.Models.ShoppingCartRepository", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -465,7 +465,7 @@ namespace BulkyBook.DataAccess.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.ApplicationUser", b =>
+            modelBuilder.Entity("BulkyBook.Models.ApplicationUserRepository", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -490,38 +490,38 @@ namespace BulkyBook.DataAccess.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasDiscriminator().HasValue("ApplicationUser");
+                    b.HasDiscriminator().HasValue("ApplicationUserRepository");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.OrderDetails", b =>
+            modelBuilder.Entity("BulkyBook.Models.OrderDetailsRepository", b =>
                 {
-                    b.HasOne("BulkyBook.Models.OrderHeader", "OrderHeader")
+                    b.HasOne("BulkyBook.Models.OrderHeaderRepository", "OrderHeaderRepository")
                         .WithMany()
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BulkyBook.Models.Product", "Product")
+                    b.HasOne("BulkyBook.Models.ProductRepository", "ProductRepository")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("OrderHeader");
+                    b.Navigation("OrderHeaderRepository");
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductRepository");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.OrderHeader", b =>
+            modelBuilder.Entity("BulkyBook.Models.OrderHeaderRepository", b =>
                 {
-                    b.HasOne("BulkyBook.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("BulkyBook.Models.ApplicationUserRepository", "ApplicationUserRepository")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId");
 
-                    b.Navigation("ApplicationUser");
+                    b.Navigation("ApplicationUserRepository");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.Product", b =>
+            modelBuilder.Entity("BulkyBook.Models.ProductRepository", b =>
                 {
                     b.HasOne("BulkyBook.Models.Category", "Category")
                         .WithMany()
@@ -529,7 +529,7 @@ namespace BulkyBook.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BulkyBook.Models.CoverType", "CoverType")
+                    b.HasOne("BulkyBook.Models.CoverTypeRepository", "CoverTypeRepository")
                         .WithMany()
                         .HasForeignKey("CoverTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -537,24 +537,24 @@ namespace BulkyBook.DataAccess.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("CoverType");
+                    b.Navigation("CoverTypeRepository");
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.ShoppingCart", b =>
+            modelBuilder.Entity("BulkyBook.Models.ShoppingCartRepository", b =>
                 {
-                    b.HasOne("BulkyBook.Models.ApplicationUser", "ApplicationUser")
+                    b.HasOne("BulkyBook.Models.ApplicationUserRepository", "ApplicationUserRepository")
                         .WithMany()
                         .HasForeignKey("ApplicationUserId");
 
-                    b.HasOne("BulkyBook.Models.Product", "Product")
+                    b.HasOne("BulkyBook.Models.ProductRepository", "ProductRepository")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("ApplicationUser");
+                    b.Navigation("ApplicationUserRepository");
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductRepository");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -608,13 +608,13 @@ namespace BulkyBook.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BulkyBook.Models.ApplicationUser", b =>
+            modelBuilder.Entity("BulkyBook.Models.ApplicationUserRepository", b =>
                 {
-                    b.HasOne("BulkyBook.Models.Company", "Company")
+                    b.HasOne("BulkyBook.Models.CompanyRepository", "CompanyRepository")
                         .WithMany()
                         .HasForeignKey("CompanyId");
 
-                    b.Navigation("Company");
+                    b.Navigation("CompanyRepository");
                 });
 #pragma warning restore 612, 618
         }

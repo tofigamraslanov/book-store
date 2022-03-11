@@ -29,7 +29,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             if (id == null)
                 return View(company);
 
-            company = _unitOfWork.Company.Get(id.GetValueOrDefault());
+            company = _unitOfWork.CompanyRepository.Get(id.GetValueOrDefault());
 
             if (company == null)
                 return NotFound();
@@ -45,9 +45,9 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
                 return View(company);
 
             if (company.Id == 0)
-                _unitOfWork.Company.Add(company);
+                _unitOfWork.CompanyRepository.Add(company);
             else
-                _unitOfWork.Company.Update(company);
+                _unitOfWork.CompanyRepository.Update(company);
 
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
@@ -58,18 +58,18 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var companies = _unitOfWork.Company.GetAll();
+            var companies = _unitOfWork.CompanyRepository.GetAll();
             return Json(new { data = companies });
         }
 
         [HttpDelete]
         public IActionResult Delete(int id)
         {
-            var company = _unitOfWork.Company.Get(id);
+            var company = _unitOfWork.CompanyRepository.Get(id);
             if (company == null)
                 return Json(new { success = false, message = "Error while deleting" });
 
-            _unitOfWork.Company.Remove(company);
+            _unitOfWork.CompanyRepository.Remove(company);
             _unitOfWork.Save();
 
             return Json(new { success = true, message = "Delete Successful" });

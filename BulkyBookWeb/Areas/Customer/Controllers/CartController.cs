@@ -50,10 +50,10 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 {
                     OrderTotal = 0,
                     ApplicationUser =
-                        _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value,
+                        _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(u => u.Id == claim.Value,
                             includeProperties: "Company")
                 },
-                ShoppingCarts = _unitOfWork.ShoppingCart.GetAll(s => s.ApplicationUserId == claim.Value,
+                ShoppingCarts = _unitOfWork.ShoppingCartRepository.GetAll(s => s.ApplicationUserId == claim.Value,
                     includeProperties: "Product")
             };
 
@@ -76,7 +76,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         public async Task<IActionResult> IndexPost()
         {
             var claim = GetClaim();
-            var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value);
+            var user = _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(u => u.Id == claim.Value);
 
             if (user is null)
             {
@@ -100,7 +100,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         public IActionResult Plus(int cartId)
         {
-            var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault
+            var cart = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault
                 (c => c.Id == cartId, includeProperties: "Product");
             cart.Count += 1;
 
@@ -113,14 +113,14 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         public IActionResult Minus(int cartId)
         {
-            var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault
+            var cart = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault
                 (c => c.Id == cartId, includeProperties: "Product");
 
             if (cart.Count == 1)
             {
-                var count = _unitOfWork.ShoppingCart.GetAll(c => c.ApplicationUserId == cart.ApplicationUserId).ToList()
+                var count = _unitOfWork.ShoppingCartRepository.GetAll(c => c.ApplicationUserId == cart.ApplicationUserId).ToList()
                     .Count;
-                _unitOfWork.ShoppingCart.Remove(cart);
+                _unitOfWork.ShoppingCartRepository.Remove(cart);
                 _unitOfWork.Save();
                 HttpContext.Session.SetInt32(StaticDetails.SessionShoppingCart, count - 1);
             }
@@ -138,14 +138,14 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         public IActionResult Remove(int cartId)
         {
-            var cart = _unitOfWork.ShoppingCart.GetFirstOrDefault
-                (c => c.Id == cartId, includeProperties: "Product");
+            var cart = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault
+                (c => c.Id == cartId, includeProperties: "ProductRepository");
 
-            var count = _unitOfWork.ShoppingCart
+            var count = _unitOfWork.ShoppingCartRepository
                 .GetAll(c => c.ApplicationUserId == cart.ApplicationUserId)
                 .ToList().Count;
 
-            _unitOfWork.ShoppingCart.Remove(cart);
+            _unitOfWork.ShoppingCartRepository.Remove(cart);
             _unitOfWork.Save();
 
             HttpContext.Session.SetInt32(StaticDetails.SessionShoppingCart, count - 1);
@@ -161,11 +161,11 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             {
                 OrderHeader = new OrderHeader()
                 {
-                    ApplicationUser = _unitOfWork.ApplicationUser
-                        .GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "Company"),
+                    ApplicationUser = _unitOfWork.ApplicationUserRepository
+                        .GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "CompanyRepository"),
                 },
-                ShoppingCarts = _unitOfWork.ShoppingCart
-                    .GetAll(s => s.ApplicationUserId == claim.Value, includeProperties: "Product")
+                ShoppingCarts = _unitOfWork.ShoppingCartRepository
+                    .GetAll(s => s.ApplicationUserId == claim.Value, includeProperties: "ProductRepository")
             };
 
             foreach (var shoppingCart in ShoppingCartViewModel.ShoppingCarts)
@@ -195,17 +195,17 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             var claim = GetClaim();
 
             ShoppingCartViewModel.OrderHeader.ApplicationUser =
-                _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "Company");
+                _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "CompanyRepository");
 
             ShoppingCartViewModel.ShoppingCarts =
-                _unitOfWork.ShoppingCart.GetAll(c => c.ApplicationUserId == claim.Value, includeProperties: "Product");
+                _unitOfWork.ShoppingCartRepository.GetAll(c => c.ApplicationUserId == claim.Value, includeProperties: "ProductRepository");
 
             ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusPending;
             ShoppingCartViewModel.OrderHeader.OrderStatus = StaticDetails.StatusPending;
             ShoppingCartViewModel.OrderHeader.ApplicationUserId = claim?.Value;
             ShoppingCartViewModel.OrderHeader.OrderDate = DateTime.Now;
 
-            _unitOfWork.OrderHeader.Add(ShoppingCartViewModel.OrderHeader);
+            _unitOfWork.OrderHeaderRepository.Add(ShoppingCartViewModel.OrderHeader);
             _unitOfWork.Save();
 
             var shoppingCarts = ShoppingCartViewModel.ShoppingCarts.ToList();
@@ -222,10 +222,10 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                     Count = shoppingCart.Count
                 };
                 ShoppingCartViewModel.OrderHeader.OrderTotal += orderDetails.Count * orderDetails.Price;
-                _unitOfWork.OrderDetails.Add(orderDetails);
+                _unitOfWork.OrderDetailsRepository.Add(orderDetails);
             }
 
-            _unitOfWork.ShoppingCart.RemoveRange(shoppingCarts);
+            _unitOfWork.ShoppingCartRepository.RemoveRange(shoppingCarts);
             _unitOfWork.Save();
             HttpContext.Session.SetInt32(StaticDetails.SessionShoppingCart, 0);
 
@@ -270,7 +270,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
 
         public IActionResult OrderConfirmation(int id)
         {
-            var orderHeader = _unitOfWork.OrderHeader.GetFirstOrDefault(o => o.Id == id);
+            var orderHeader = _unitOfWork.OrderHeaderRepository.GetFirstOrDefault(o => o.Id == id);
 
             TwilioClient.Init(_twilioOptions.AccountSid, _twilioOptions.AuthToken);
 

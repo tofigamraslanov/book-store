@@ -87,8 +87,8 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                     lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
-                    var user = _unitOfWork.ApplicationUser.GetFirstOrDefault(u => u.Email == Input.Email);
-                    var count = _unitOfWork.ShoppingCart.GetAll(u => u.ApplicationUserId == user.Id).Count();
+                    var user = _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(u => u.Email == Input.Email);
+                    var count = _unitOfWork.ShoppingCartRepository.GetAll(u => u.ApplicationUserId == user.Id).Count();
                     HttpContext.Session.SetInt32(StaticDetails.SessionShoppingCart, count);
 
                     _logger.LogInformation("User logged in.");

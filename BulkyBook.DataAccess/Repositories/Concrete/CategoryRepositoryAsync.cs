@@ -1,22 +1,24 @@
 ﻿using System.Linq;
+using System.Threading.Tasks;
 using BulkyBook.DataAccess.Data;
 using BulkyBook.DataAccess.Repositories.Abstract;
 using BulkyBook.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BulkyBook.DataAccess.Repositories.Concrete
 {
-    public class CategoryRepository : Repository<Category>, ICategoryRepository
+    public class CategoryRepositoryAsync : RepositoryAsync<Category>, ICategoryRepositoryAsync
     {
         private readonly ApplicationDbContext _context;
 
-        public CategoryRepository(ApplicationDbContext context) : base(context)
+        public CategoryRepositoryAsync(ApplicationDbContext context) : base(context)
         {
             _context = context;
         }
 
-        public void Update(Category category)
+        public async Task UpdateAsync(Category category)
         {
-            var categoryFromDb = _context.Categories.FirstOrDefault(c => c.Id == category.Id);
+            var categoryFromDb = await _context.Categories.FirstOrDefaultAsync(c => c.Id == category.Id);
             if (categoryFromDb == null) 
                 return;
 
