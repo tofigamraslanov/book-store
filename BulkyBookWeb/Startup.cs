@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Stripe;
 using System;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace BulkyBookWeb
 {
@@ -34,6 +35,7 @@ namespace BulkyBookWeb
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

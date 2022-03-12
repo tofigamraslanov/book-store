@@ -1,7 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using BulkyBook.DataAccess.Repositories.Abstract;
 using BulkyBook.Entities;
 using BulkyBook.Utilities;
+using BulkyBookWeb.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +20,30 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             _unitOfWork = unitOfWork;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int productPage = 1)
         {
-            return View();
+            var categoryViewModel = new CategoryViewModel
+            {
+                Categories = await _unitOfWork.CategoryRepositoryAsync.GetAllAsync(),
+            };
+
+            var count = categoryViewModel.Categories.Count();
+
+            categoryViewModel.Categories = categoryViewModel.Categories
+                .OrderBy(c => c.Name)
+                .Skip((productPage - 1) * 2)
+                .Take(2)
+                .ToList();
+
+            categoryViewModel.PagingInfo = new PagingInfo
+            {
+                CurrentPage = productPage,
+                ItemsPerPage = 2,
+                TotalItem = count,
+                UrlParameter = "/Admin/Category/Index?productPage=:"
+            };
+
+            return View(categoryViewModel);
         }
 
         public async Task<IActionResult> Upsert(int? id)
@@ -30,7 +53,7 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             if (id == null)
                 return View(category);
 
-            category =await _unitOfWork.CategoryRepositoryAsync.GetAsync(id.GetValueOrDefault());
+            category = await _unitOfWork.CategoryRepositoryAsync.GetAsync(id.GetValueOrDefault());
 
             if (category == null)
                 return NotFound();
@@ -45,9 +68,9 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
             if (!ModelState.IsValid) return View(category);
 
             if (category.Id == 0)
-               await _unitOfWork.CategoryRepositoryAsync.AddAsync(category);
+                await _unitOfWork.CategoryRepositoryAsync.AddAsync(category);
             else
-               await _unitOfWork.CategoryRepositoryAsync.UpdateAsync(category);
+                await _unitOfWork.CategoryRepositoryAsync.UpdateAsync(category);
 
             _unitOfWork.Save();
             return RedirectToAction(nameof(Index));
@@ -65,13 +88,17 @@ namespace BulkyBookWeb.Areas.Admin.Controllers
         [HttpDelete]
         public async Task<IActionResult> Delete(int id)
         {
-            var category =await _unitOfWork.CategoryRepositoryAsync.GetAsync(id);
+            var category = await _unitOfWork.CategoryRepositoryAsync.GetAsync(id);
             if (category == null)
+            {
+                TempData["Error"] = "Error deleting Category";
                 return Json(new { success = false, message = "Error while deleting" });
+            }
 
             await _unitOfWork.CategoryRepositoryAsync.RemoveAsync(category);
             _unitOfWork.Save();
 
+            TempData["Success"] = "Category successfully deleted";
             return Json(new { success = true, message = "Delete successful" });
         }
 
