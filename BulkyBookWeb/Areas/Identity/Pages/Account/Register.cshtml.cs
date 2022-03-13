@@ -1,4 +1,5 @@
-﻿using BulkyBook.DataAccess.Repositories.Abstract;
+﻿using System;
+using BulkyBook.DataAccess.Repositories.Abstract;
 using BulkyBook.Entities;
 using BulkyBook.Utilities;
 using Microsoft.AspNetCore.Authentication;
@@ -12,10 +13,12 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 
 namespace BulkyBookWeb.Areas.Identity.Pages.Account
 {
@@ -28,6 +31,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IUnitOfWork _unitOfWork;
+        private IWebHostEnvironment _hostEnvironment;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
@@ -35,7 +39,8 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
             RoleManager<IdentityRole> roleManager,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            IWebHostEnvironment hostEnvironment)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -43,6 +48,7 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
             _emailSender = emailSender;
             _roleManager = roleManager;
             _unitOfWork = unitOfWork;
+            _hostEnvironment = hostEnvironment;
         }
 
         [BindProperty] public InputModel Input { get; set; }
@@ -100,6 +106,18 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                         Value = r
                     }),
             };
+
+            if (User.IsInRole(StaticDetails.RoleEmployee))
+            {
+                Input.RoleList = _roleManager.Roles.Where(u => u.Name == StaticDetails.RoleUserCompany)
+                    .Select(x => x.Name)
+                    .Select(r => new SelectListItem
+                    {
+                        Text = r,
+                        Value = r
+                    });
+            }
+
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
@@ -157,8 +175,38 @@ namespace BulkyBookWeb.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    var pathToFile = _hostEnvironment.WebRootPath + Path.DirectorySeparatorChar +
+                                     "templates" + Path.DirectorySeparatorChar + "email-templates" +
+                                     Path.DirectorySeparatorChar + "confirm-account-registration.html";
+
+                    var subject = "Confirm Account Registration";
+                    var htmlBody = "";
+
+                    using (var reader = System.IO.File.OpenText(pathToFile))
+                    {
+                        htmlBody = reader.ReadToEnd();
+                    }
+
+                    //{0} : Subject  
+                    //{1} : DateTime  
+                    //{2} : Name  
+                    //{3} : Email  
+                    //{4} : Message  
+                    //{5} : callbackURL  
+
+                    var message =
+                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.";
+
+                    var messageBody = string.Format(
+                        htmlBody,
+                        subject,
+                        $"{DateTime.Now:dddd,d MMMM yyyy}",
+                        user.Name,
+                        user.Email,
+                        message,
+                        callbackUrl);
+
+                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email", messageBody);
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {

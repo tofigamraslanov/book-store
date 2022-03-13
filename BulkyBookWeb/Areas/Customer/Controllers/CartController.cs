@@ -140,7 +140,7 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
         public IActionResult Remove(int cartId)
         {
             var cart = _unitOfWork.ShoppingCartRepository.GetFirstOrDefault
-                (c => c.Id == cartId, includeProperties: "ProductRepository");
+                (c => c.Id == cartId, includeProperties: "Product");
 
             var count = _unitOfWork.ShoppingCartRepository
                 .GetAll(c => c.ApplicationUserId == cart.ApplicationUserId)
@@ -163,10 +163,10 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
                 OrderHeader = new OrderHeader()
                 {
                     ApplicationUser = _unitOfWork.ApplicationUserRepository
-                        .GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "CompanyRepository"),
+                        .GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "Company"),
                 },
                 ShoppingCarts = _unitOfWork.ShoppingCartRepository
-                    .GetAll(s => s.ApplicationUserId == claim.Value, includeProperties: "ProductRepository")
+                    .GetAll(s => s.ApplicationUserId == claim.Value, includeProperties: "Product")
             };
 
             foreach (var shoppingCart in ShoppingCartViewModel.ShoppingCarts)
@@ -196,10 +196,10 @@ namespace BulkyBookWeb.Areas.Customer.Controllers
             var claim = GetClaim();
 
             ShoppingCartViewModel.OrderHeader.ApplicationUser =
-                _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "CompanyRepository");
+                _unitOfWork.ApplicationUserRepository.GetFirstOrDefault(u => u.Id == claim.Value, includeProperties: "Company");
 
             ShoppingCartViewModel.ShoppingCarts =
-                _unitOfWork.ShoppingCartRepository.GetAll(c => c.ApplicationUserId == claim.Value, includeProperties: "ProductRepository");
+                _unitOfWork.ShoppingCartRepository.GetAll(c => c.ApplicationUserId == claim.Value, includeProperties: "Product");
 
             ShoppingCartViewModel.OrderHeader.PaymentStatus = StaticDetails.PaymentStatusPending;
             ShoppingCartViewModel.OrderHeader.OrderStatus = StaticDetails.StatusPending;

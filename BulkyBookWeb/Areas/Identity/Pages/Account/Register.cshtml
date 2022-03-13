@@ -69,7 +69,7 @@
                                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
                             </div>
                         </div>
-                        @if (User.IsInRole(StaticDetails.RoleAdmin))
+                        @if (User.IsInRole(StaticDetails.RoleAdmin) || User.IsInRole(StaticDetails.RoleEmployee))
                         {
                             <div class="form-group">
                                 <label asp-for="Input.Role" class="mb-1"></label>
