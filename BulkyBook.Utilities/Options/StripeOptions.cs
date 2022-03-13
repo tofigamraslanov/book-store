@@ -1,4 +1,4 @@
-﻿namespace BulkyBook.Utilities
+﻿namespace BulkyBook.Utilities.Options
 {
     public class StripeOptions
     {

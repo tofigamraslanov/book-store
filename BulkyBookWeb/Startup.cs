@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Stripe;
 using System;
+using BulkyBook.Utilities.Options;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace BulkyBookWeb
@@ -38,10 +39,12 @@ namespace BulkyBookWeb
             services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
             services.AddSingleton<IEmailSender, EmailSender>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
 
             services.Configure<EmailOptions>(Configuration.GetSection(EmailOptions.Email));
             services.Configure<StripeOptions>(Configuration.GetSection(StripeOptions.Stripe));
             services.Configure<TwilioOptions>(Configuration.GetSection(TwilioOptions.Twilio));
+            services.Configure<BrainTreeOptions>(Configuration.GetSection(BrainTreeOptions.BrainTree));
 
             services.AddControllersWithViews();
             services.AddRazorPages();

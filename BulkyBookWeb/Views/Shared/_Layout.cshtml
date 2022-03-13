@@ -18,16 +18,13 @@
 <header>
     <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-dark bg-primary border-bottom box-shadow mb-3">
         <div class="container">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">BulkyBook</a>
+            <a class="navbar-brand" asp-area="Customer" asp-controller="Home" asp-action="Index">BulkyBook</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="Customer" asp-controller="Home" asp-action="Index">Home</a>
-                    </li>
                     @if (User.IsInRole(StaticDetails.RoleAdmin))
                     {
                         <li class="nav-item dropdown">
@@ -65,6 +62,12 @@
                             }
                         </a>
                     </li>
+                    @if (User.IsInRole(StaticDetails.RoleEmployee) || User.IsInRole(StaticDetails.RoleAdmin))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Admin" asp-controller="BrainTree" asp-action="Index">Brain Tree</a>
+                        </li>
+                    }
                     @if (_httpContextAccessor.HttpContext?.Session.GetInt32(StaticDetails.SessionShoppingCart) != null)
                     {
                         <li class="text-white">
