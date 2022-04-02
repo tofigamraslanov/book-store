@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Stripe;
 using System;
+using BulkyBook.DataAccess.Initializer;
 using BulkyBook.Utilities.Options;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
@@ -36,15 +37,16 @@ namespace BulkyBookWeb
             services.AddIdentity<IdentityUser, IdentityRole>().AddDefaultTokenProviders()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
-            services.AddSingleton<IEmailSender, EmailSender>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
-
             services.Configure<EmailOptions>(Configuration.GetSection(EmailOptions.Email));
             services.Configure<StripeOptions>(Configuration.GetSection(StripeOptions.Stripe));
             services.Configure<TwilioOptions>(Configuration.GetSection(TwilioOptions.Twilio));
             services.Configure<BrainTreeOptions>(Configuration.GetSection(BrainTreeOptions.BrainTree));
+
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSingleton<IEmailSender, EmailSender>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton<IBrainTreeGate, BrainTreeGate>();
+            services.AddScoped<IDbInitializer, DbInitializer>();
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -75,7 +77,7 @@ namespace BulkyBookWeb
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDbInitializer dbInitializer)
         {
             if (env.IsDevelopment())
             {
@@ -100,6 +102,8 @@ namespace BulkyBookWeb
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            dbInitializer.Initialize();
 
             app.UseEndpoints(endpoints =>
             {

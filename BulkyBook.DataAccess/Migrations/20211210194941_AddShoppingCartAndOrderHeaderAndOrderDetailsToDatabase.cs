@@ -106,7 +106,7 @@ namespace BulkyBook.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderDetailsRepository",
+                name: "OrderDetails",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -135,12 +135,12 @@ namespace BulkyBook.DataAccess.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_OrderId",
-                table: "OrderDetailsRepository",
+                table: "OrderDetails",
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrderDetails_ProductId",
-                table: "OrderDetailsRepository",
+                table: "OrderDetails",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
@@ -162,7 +162,7 @@ namespace BulkyBook.DataAccess.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OrderDetailsRepository");
+                name: "OrderDetails");
 
             migrationBuilder.DropTable(
                 name: "ShoppingCarts");
